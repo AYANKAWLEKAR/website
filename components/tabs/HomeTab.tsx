@@ -132,7 +132,7 @@ export default function HomeTab() {
         </motion.div>
 
         <motion.p
-          className="mx-auto mt-12 max-w-[52ch] text-center font-display text-[clamp(1.1rem,2vw,1.4rem)] leading-[1.9]"
+          className="mx-auto mt-12 max-w-[52ch] text-center font-body text-[clamp(1.05rem,1.9vw,1.3rem)] leading-[1.85]"
           style={reduced || inkSettled ? undefined : { filter: "url(#ink-murk)" }}
           initial={reduced ? { opacity: 0 } : { opacity: 0, color: "#8c7455" }}
           animate={

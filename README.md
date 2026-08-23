@@ -31,6 +31,14 @@ reduced-motion pass; reports console errors and horizontal overflow.
 - `components/ScrollSite.tsx` — tab shell, navigation, smoke transition choreography
 - `components/tabs/` — Home, Experience, Projects, About, Contact sections
 - `components/KatanaUnderline.tsx`, `components/Shuriken.tsx` — original ink SVG assets
-- `components/PetalCanvas.tsx`, `components/SmokeCanvas.tsx` — decorative canvas layers
+- `components/SmokeCanvas.tsx` — smoke transition canvas layer
+- `components/PetalCanvas.tsx` — sakura cursor trail (currently unmounted)
+
+## Fonts
+
+- **Harukaze** (`app/fonts/harukaze.woff2`) — brush display face for the
+  owner's name, by Andrie Nugrie (nugsproject.com). **Personal-use license
+  only**; purchase a commercial license before any commercial use of this site.
+- **Zen Old Mincho** — all other text, via Google Fonts (SIL OFL).
 - `lib/content.ts` — all site copy (placeholders to fill in)
 - `public/pmresume.pdf` — résumé served by the Experience tab's download button

@@ -1,26 +1,23 @@
 import type { Metadata } from "next";
-import { Noto_Serif, IBM_Plex_Mono } from "next/font/google";
+import { Zen_Old_Mincho } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
-// Self-hosted latin subset (SIL OFL). The Google package ships 142 CJK
-// subset files; only Latin glyphs are ever rendered in the display face.
+// Harukaze by Andrie Nugrie (nugsproject.com) — brush display face used
+// only for the owner's name. Personal-use license; a commercial license
+// is required if this site ever becomes commercial.
 const displayFont = localFont({
-  src: "./fonts/yuji-mai-latin.woff2",
+  src: "./fonts/harukaze.woff2",
   weight: "400",
   display: "swap",
   variable: "--font-display",
 });
 
-const bodyFont = Noto_Serif({
+// Zen Old Mincho (SIL OFL) — every other piece of text on the site.
+const bodyFont = Zen_Old_Mincho({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-body",
-});
-
-const metaFont = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-meta",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${displayFont.variable} ${bodyFont.variable} ${metaFont.variable} h-full antialiased`}
+      className={`${displayFont.variable} ${bodyFont.variable} h-full antialiased`}
     >
       <body className="scroll-surface min-h-full">{children}</body>
     </html>

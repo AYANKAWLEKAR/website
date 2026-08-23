@@ -34,7 +34,8 @@
   --color-smoke-light: var(--smoke-light);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
-  --font-meta: var(--font-meta);
+  /* Meta text shares the body face — one Mincho voice across the site */
+  --font-meta: var(--font-body);
 }
 
 /* ---------------------------------------------------------------- */
@@ -139,7 +140,7 @@ body {
 /* ---------------------------------------------------------------- */
 
 body {
-  font-family: var(--font-body), "Noto Serif", Georgia, serif;
+  font-family: var(--font-body), "Zen Old Mincho", Georgia, serif;
   color: var(--ink);
   background: var(--paper);
   font-size: 1.0625rem;
@@ -166,7 +167,7 @@ body {
 }
 
 .meta-label {
-  font-family: var(--font-meta), "IBM Plex Mono", monospace;
+  font-family: var(--font-body), "Zen Old Mincho", Georgia, serif;
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
