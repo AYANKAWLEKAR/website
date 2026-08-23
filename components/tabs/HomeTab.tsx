@@ -124,11 +124,12 @@ export default function HomeTab() {
           animate="show"
           custom={0.08}
         >
-          <p className="text-center font-display text-[clamp(3.2rem,9vw,6.5rem)] leading-[1.05] text-ink">
+          <p className="text-center font-display text-[clamp(3.4rem,12vw,8.75rem)] leading-[1.05] text-ink">
             {owner.name}
           </p>
-          <HankoSeal className="absolute -right-7 top-3 max-md:-right-1 max-md:-top-1" />
-          <KatanaUnderline className="mt-4 w-full" />
+          <HankoSeal className="absolute -right-8 top-4 max-md:-right-1 max-md:-top-1" />
+          {/* The stroke sweeps a touch past the name, like brush follow-through */}
+          <KatanaUnderline className="mt-5 w-[110%] -ml-[5%] max-md:ml-0 max-md:w-full" />
         </motion.div>
 
         <motion.p
