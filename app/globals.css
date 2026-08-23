@@ -41,6 +41,11 @@
 /* Parchment scroll surface                                          */
 /* ---------------------------------------------------------------- */
 
+/* The desk beneath the scroll — visible through the torn sheet edges */
+body {
+  background: #241a12;
+}
+
 .scroll-surface {
   position: relative;
   min-height: 100dvh;
@@ -57,7 +62,33 @@
       rgb(130 84 40 / 0.17) 0%,
       transparent 42%
     ),
+    /* Age stains — kept near edges and corners, away from body copy */
+    radial-gradient(ellipse 230px 170px at 89% 4%, rgb(101 62 24 / 0.11), transparent 70%),
+    radial-gradient(ellipse 280px 210px at 2% 72%, rgb(101 62 24 / 0.09), transparent 70%),
+    radial-gradient(ellipse 190px 150px at 96% 91%, rgb(74 45 21 / 0.12), transparent 70%),
+    radial-gradient(ellipse 150px 110px at 7% 13%, rgb(90 51 16 / 0.08), transparent 70%),
+    /* Roll creases — faint horizontal folds from being rolled and unrolled */
+    linear-gradient(
+      179deg,
+      transparent calc(30% - 2px),
+      rgb(61 35 14 / 0.055) 30%,
+      rgb(255 247 218 / 0.05) calc(30% + 1.5px),
+      transparent calc(30% + 3px)
+    ),
+    linear-gradient(
+      181deg,
+      transparent calc(63% - 2px),
+      rgb(61 35 14 / 0.05) 63%,
+      rgb(255 247 218 / 0.045) calc(63% + 1.5px),
+      transparent calc(63% + 3px)
+    ),
     linear-gradient(115deg, var(--paper-light), var(--paper) 48%, #d7bd87);
+  /* Torn, deckled sheet edges: a displaced-noise rect masks the surface so
+     the dark desk shows through an irregular contour on every side */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 1200 1600'%3E%3Cfilter id='tear' x='-5%25' y='-5%25' width='110%25' height='110%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.011 0.019' numOctaves='4' seed='7'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='30'/%3E%3C/filter%3E%3Crect x='17' y='17' width='1166' height='1566' fill='%23fff' filter='url(%23tear)'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 1200 1600'%3E%3Cfilter id='tear' x='-5%25' y='-5%25' width='110%25' height='110%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.011 0.019' numOctaves='4' seed='7'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='30'/%3E%3C/filter%3E%3Crect x='17' y='17' width='1166' height='1566' fill='%23fff' filter='url(%23tear)'/%3E%3C/svg%3E");
+  mask-size: 100% 100%;
 }
 
 /* Organic paper-fiber mottling via fractal noise — not mechanical stripes */
@@ -66,7 +97,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.1;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 300px 300px;
@@ -80,7 +111,8 @@
   box-shadow:
     inset 0 0 4rem rgb(71 39 14 / 0.18),
     inset 0 0 9rem rgb(90 51 16 / 0.11),
-    inset 0 0 1.3rem rgb(61 35 14 / 0.2);
+    inset 0 0 1.3rem rgb(61 35 14 / 0.2),
+    inset 0 0 0.35rem rgb(45 26 10 / 0.35); /* burnt rim at the torn edge */
 }
 
 /* Aging belongs at the edges; keep small viewports from going muddy */
@@ -96,7 +128,8 @@
 .scroll-content {
   position: relative;
   z-index: 10;
-  width: min(100% - 2rem, 72rem);
+  /* 3rem margin keeps copy clear of the torn edge contour on small screens */
+  width: min(100% - 3rem, 72rem);
   margin-inline: auto;
   padding: clamp(1.25rem, 3.5vw, 3rem) 0 clamp(2rem, 5vw, 5rem);
 }

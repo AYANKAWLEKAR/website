@@ -5,7 +5,7 @@ import { owner } from "@/lib/content";
 const links = [
   { label: "Email", href: `mailto:${owner.email}`, display: owner.email },
   { label: "GitHub", href: owner.github, display: "github.com/AYANKAWLEKAR" },
-  { label: "LinkedIn", href: owner.linkedin, display: "Placeholder — add profile URL" },
+  { label: "LinkedIn", href: owner.linkedin, display: "linkedin.com/in/ayan-kawlekar" },
 ];
 
 export default function ContactTab() {

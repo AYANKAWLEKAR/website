@@ -185,7 +185,10 @@ export default function ScrollSite() {
       </header>
 
       <main className="relative z-10">
-        <AnimatePresence mode="wait" initial={false} custom={mode}>
+        {/* No initial={false}: first-load entrances (hero stagger, katana
+            draw, ink reveal) must play; the panel itself still swaps
+            instantly on load via the "instant" transition mode. */}
+        <AnimatePresence mode="wait" custom={mode}>
           <motion.div
             key={active}
             ref={panelRef}

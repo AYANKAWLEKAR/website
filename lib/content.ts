@@ -1,13 +1,13 @@
 export const owner = {
   name: "Ayan Kawlekar",
   positioning:
-    "I build AI agents, machine-learning systems, and full-stack products — applied mathematics at UC Berkeley.",
+    "Sophomore at Berkeley studying applied math and data science. Interested in AI agents and infrastructure. Strong data science and backend fundamentals with previous experience as a swe @ seed chip-design startup and also at an investment fund. Looking to join fast-paced teams working on building innovative agentic products. Open to working Winter & Summer 2027.",
   location: "Berkeley, California",
   interests: "AI/ML · robotics · finance · startups",
-  currently: "Placeholder — current focus goes here",
-  email: "emailayankawlekar@gmail.com",
+  currently: "PM intern @ Oracle — agentic demos on the 26ai database",
+  email: "ayan_kawlekar@berkeley.edu",
   github: "https://github.com/AYANKAWLEKAR",
-  linkedin: "#", // TODO: add LinkedIn profile URL
+  linkedin: "https://www.linkedin.com/in/ayan-kawlekar",
 };
 
 export type ExperienceEntry = {
@@ -20,40 +20,58 @@ export type ExperienceEntry = {
 
 export const experience: ExperienceEntry[] = [
   {
-    role: "Placeholder Role",
-    organization: "Placeholder Organization",
-    dates: "May 20XX — Aug 20XX",
+    role: "Product Management Intern",
+    organization: "Oracle",
+    dates: "Jun 2026 — Present",
     summary:
-      "Placeholder: one clear sentence about what was built or achieved in this role.",
+      "Formulating a demo AI agent on the 26ai database — context engineering through multi-hop traversal and three memory modalities.",
     detail:
-      "Placeholder: one concise detail on scale, outcome, or technical depth.",
+      "In-database semantic retrieval with DBMS_VECTOR and ONNX MiniLM embeddings over a 50,000+ document career corpus, wrapped with observability for a React/Next.js demo planned for 50+ sales calls.",
   },
   {
-    role: "Placeholder Role",
-    organization: "Placeholder Organization",
-    dates: "Jan 20XX — May 20XX",
+    role: "AI Intern",
+    organization: "Origo Capital",
+    dates: "May 2026 — Present",
     summary:
-      "Placeholder: one clear sentence about what was built or achieved in this role.",
+      "Developing Python AI agents that automate sourcing and screening of 100+ lower-middle-market buyout targets ($1–5M EBITDA).",
     detail:
-      "Placeholder: one concise detail on scale, outcome, or technical depth.",
+      "Support financial diligence — drafting CIMs and internal investment decks — and maintain KPI tracking across the existing portfolio.",
   },
   {
-    role: "Placeholder Role",
-    organization: "Placeholder Organization",
-    dates: "Sep 20XX — Dec 20XX",
+    role: "Product Development Intern",
+    organization: "ChipChop (Antler backed)",
+    dates: "Feb 2026 — Present",
     summary:
-      "Placeholder: one clear sentence about what was built or achieved in this role.",
+      "Architecting a multi-agent workflow for FPGA design that transforms user requests and initial documents into RTL code.",
     detail:
-      "Placeholder: one concise detail on scale, outcome, or technical depth.",
+      "Designed a proprietary debugging agent that assesses evidence and routes custom tests across agents (70% bug coverage); orchestrate containerized RTL simulations on Kubernetes with shared agent memory over a custom data store.",
   },
   {
-    role: "Placeholder Role",
-    organization: "Placeholder Organization",
-    dates: "Jun 20XX — Aug 20XX",
+    role: "Machine Learning Research Assistant",
+    organization: "Berkeley Nanotechnology Lab",
+    dates: "Sep 2025 — May 2026",
     summary:
-      "Placeholder: one clear sentence about what was built or achieved in this role.",
+      "Designed PyTorch models to classify lithography manufacturing data and optimize machine parameters.",
     detail:
-      "Placeholder: one concise detail on scale, outcome, or technical depth.",
+      "Built a SEMI SECS/GEM extraction protocol standardizing tool output, and fine-tuned Llama-3 on 9,000+ lab samples for an internal agent that onboards members and queries past trials.",
+  },
+  {
+    role: "Software Engineer, Contract",
+    organization: "Visa",
+    dates: "Sep 2025 — Dec 2025",
+    summary:
+      "Created AI web-scraping tools validating 1,600+ VCIS financial institutions against European regulators.",
+    detail:
+      "Playwright and Pydantic backend scripts with OpenAI-assisted validation, plus a Dockerized ETL workflow ingesting Excel exports and generating JSON/XLSX reconciliation reports.",
+  },
+  {
+    role: "Robotics Research Assistant",
+    organization: "Rutgers PRACSYS Lab",
+    dates: "Jun 2024 — Jan 2025",
+    summary:
+      "Deployed a multimodal computer-vision pipeline for industrial decision-making across 340K+ RGB, depth, and segmentation scenes.",
+    detail:
+      "Trained and ablated MultiMAE visual encoders on AWS SageMaker; exported via TorchScript to benchmark inference latency for ROS-based deployment.",
   },
 ];
 
@@ -68,27 +86,30 @@ export type ProjectEntry = {
 export const projects: ProjectEntry[] = [
   {
     index: "01",
-    title: "Placeholder Project",
+    title: "StockSmart",
     thesis:
-      "Placeholder: a one-sentence thesis for what this project proves or explores.",
-    stack: "Python · PyTorch · Placeholder",
-    outcome: "Placeholder: the result or meaningful outcome of the work.",
+      "A retail restocking system that pairs a Temporal Fusion Transformer forecaster with a reinforcement-learning ordering policy.",
+    stack: "Python · PyTorch · Stable-Baselines",
+    outcome:
+      "DQN agent trained across five product categories to time restock order placement against forecasted demand.",
   },
   {
     index: "02",
-    title: "Placeholder Project",
+    title: "Private Equity Sourcing Engine",
     thesis:
-      "Placeholder: a one-sentence thesis for what this project proves or explores.",
-    stack: "TypeScript · Next.js · Placeholder",
-    outcome: "Placeholder: the result or meaningful outcome of the work.",
+      "A tool-calling LLM agent and pgvector RAG retriever that convert natural-language buy-boxes into executable filter rulesets.",
+    stack: "Python · DuckDB · pgvector",
+    outcome:
+      "Queries 4.4M corporate records in under 15ms; entity resolution reaches 95% ABN match accuracy, feeding a 3-tier scoring pipeline with Claude moat judging.",
   },
   {
     index: "03",
-    title: "Placeholder Project",
+    title: "Memcache API",
     thesis:
-      "Placeholder: a one-sentence thesis for what this project proves or explores.",
-    stack: "Placeholder · Placeholder",
-    outcome: "Placeholder: the result or meaningful outcome of the work.",
+      "Episodic memory infrastructure for long-running personal agents, improving context quality at retrieval time.",
+    stack: "FastAPI · Celery · Redis · Neo4j",
+    outcome:
+      "Celery-driven summarization with Redis conversation caching and a Neo4j graph of entity and episode relations.",
   },
 ];
 
