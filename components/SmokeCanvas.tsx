@@ -15,6 +15,8 @@ type SmokeParticle = {
   endScale: number;
   peakAlpha: number;
   spriteIndex: number;
+  phase: number;
+  sway: number;
 };
 
 const MAX_PARTICLES = 120;
@@ -23,14 +25,13 @@ const BURST_COUNT = 55;
 /**
  * Incense/ink smoke layer for the tab transition. Listens for the
  * SMOKE_EVENT CustomEvent and emits a staggered burst of warm gray-brown
- * particles that rise from the content column and dissipate.
+ * wisps that rise off the dissolving content column.
  */
 export default function SmokeCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduced.matches) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -67,9 +68,12 @@ export default function SmokeCanvas() {
     const particles: SmokeParticle[] = [];
     let raf = 0;
     let running = false;
-    const spawnTimeouts: ReturnType<typeof setTimeout>[] = [];
+    let lastFrame = 0;
+    const spawnTimeouts = new Set<ReturnType<typeof setTimeout>>();
 
     const tick = (now: number) => {
+      const dt = lastFrame ? Math.min((now - lastFrame) / 1000, 0.05) : 1 / 60;
+      lastFrame = now;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
@@ -78,8 +82,7 @@ export default function SmokeCanvas() {
           particles.splice(i, 1);
           continue;
         }
-        const dt = 1 / 60;
-        p.x += p.vx * dt;
+        p.x += (p.vx + Math.sin((now / 1000) * p.sway + p.phase) * 9) * dt;
         p.y += p.vy * dt;
         p.vy -= 6 * dt; // buoyancy — smoke accelerates gently upward
         // Alpha envelope: quick rise, long fall
@@ -88,14 +91,22 @@ export default function SmokeCanvas() {
         const scale = p.startScale + (p.endScale - p.startScale) * t;
         const sprite = sprites[p.spriteIndex];
         const size = 128 * scale * dpr;
-        ctx.globalAlpha = Math.max(alpha, 0);
-        ctx.drawImage(
-          sprite,
-          p.x * dpr - size / 2,
-          p.y * dpr - size / 2,
-          size,
-          size
-        );
+        // Stamp three offsets along a slowly curling vector so each particle
+        // reads as a ribboned strand rather than one round blob.
+        const curl = p.phase + t * 2;
+        for (let s = 0; s < 3; s++) {
+          const r = (s - 1) * 13 * scale;
+          const ox = Math.cos(curl) * r;
+          const oy = Math.sin(curl) * r - s * 4 * scale;
+          ctx.globalAlpha = Math.max(alpha * (1 - s * 0.28), 0);
+          ctx.drawImage(
+            sprite,
+            (p.x + ox) * dpr - size / 2,
+            (p.y + oy) * dpr - size / 2,
+            size,
+            size
+          );
+        }
       }
       ctx.globalAlpha = 1;
       if (particles.length > 0 && !document.hidden) {
@@ -112,6 +123,7 @@ export default function SmokeCanvas() {
       if (canvas.width !== expected && window.innerWidth > 0) resize();
       if (!running) {
         running = true;
+        lastFrame = 0;
         raf = requestAnimationFrame(tick);
       }
     };
@@ -121,30 +133,38 @@ export default function SmokeCanvas() {
       if (document.hidden || window.innerWidth === 0) return;
       const w = window.innerWidth;
       const h = window.innerHeight;
-      // Emit from the content column region
-      const x = w * (0.24 + Math.random() * 0.52);
-      const y = h * (0.22 + Math.random() * 0.5);
+      // Hug the content column, biased toward the text block's lower half,
+      // so smoke visibly rises off the dissolving copy.
+      const x = w * (0.28 + Math.random() * 0.44);
+      const y = h * (0.3 + Math.random() * 0.35);
       particles.push({
         x,
         y,
-        vx: (Math.random() - 0.5) * 34,
+        vx: (Math.random() - 0.5) * 26,
         vy: -(34 + Math.random() * 56),
         born: performance.now(),
         life: 900 + Math.random() * 500,
-        startScale: 0.35 + Math.random() * 0.4,
-        endScale: 0.9 + Math.random() * 0.9,
-        peakAlpha: 0.07 + Math.random() * 0.09,
+        startScale: 0.3 + Math.random() * 0.35,
+        endScale: 0.8 + Math.random() * 0.8,
+        peakAlpha: 0.06 + Math.random() * 0.08,
         spriteIndex: Math.floor(Math.random() * sprites.length),
+        phase: Math.random() * Math.PI * 2,
+        sway: 1.4 + Math.random() * 2.2,
       });
       ensureLoop();
     };
 
     const onBurst = () => {
+      if (reduced.matches) return;
       // Mobile gets a lighter burst
       const count = window.innerWidth < 768 ? Math.floor(BURST_COUNT / 2.5) : BURST_COUNT;
       for (let i = 0; i < count; i++) {
         const delay = Math.random() * 600; // staggered emission over the dissolve
-        spawnTimeouts.push(setTimeout(spawnOne, delay));
+        const id = setTimeout(() => {
+          spawnTimeouts.delete(id);
+          spawnOne();
+        }, delay);
+        spawnTimeouts.add(id);
       }
     };
 
@@ -152,9 +172,20 @@ export default function SmokeCanvas() {
       if (!document.hidden && particles.length > 0) ensureLoop();
     };
 
+    // Honor a mid-session switch to reduced motion: stop and clear at once
+    const onPreferenceChange = () => {
+      if (reduced.matches) {
+        spawnTimeouts.forEach(clearTimeout);
+        spawnTimeouts.clear();
+        particles.length = 0;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+
     window.addEventListener(SMOKE_EVENT, onBurst);
     window.addEventListener("resize", resize);
     document.addEventListener("visibilitychange", onVisibility);
+    reduced.addEventListener("change", onPreferenceChange);
 
     if (process.env.NODE_ENV === "development") {
       (window as unknown as Record<string, unknown>).__smokeDebug = {
@@ -169,6 +200,7 @@ export default function SmokeCanvas() {
       window.removeEventListener(SMOKE_EVENT, onBurst);
       window.removeEventListener("resize", resize);
       document.removeEventListener("visibilitychange", onVisibility);
+      reduced.removeEventListener("change", onPreferenceChange);
     };
   }, []);
 

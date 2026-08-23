@@ -16,7 +16,7 @@ export default function ExperienceTab() {
         <a
           href="/pmresume.pdf"
           download="Ayan-Kawlekar-Resume.pdf"
-          className="group inline-flex items-center gap-3 border border-ink-muted/60 px-5 py-2.5 font-meta text-[0.78rem] uppercase tracking-[0.14em] text-ink transition-colors duration-200 hover:border-vermilion hover:text-vermilion"
+          className="group inline-flex items-center gap-3 border border-ink-muted/60 px-5 py-3 font-meta text-[0.78rem] uppercase tracking-[0.14em] text-ink transition-colors duration-200 hover:border-vermilion hover:text-vermilion"
         >
           <svg
             viewBox="0 0 14 14"
@@ -52,14 +52,14 @@ export default function ExperienceTab() {
               <p className="mt-2 max-w-[62ch] leading-[1.7] text-ink">
                 {entry.summary}
               </p>
-              <p className="mt-1 max-w-[62ch] leading-[1.7] text-ink-muted">
+              <p className="mt-1 max-w-[62ch] text-[0.95rem] leading-[1.7] text-ink-muted">
                 {entry.detail}
               </p>
-              <p className="mt-3 font-meta text-[0.72rem] tracking-[0.14em] text-ink-faint md:hidden">
+              <p className="mt-3 font-meta text-[0.78rem] tracking-[0.14em] text-ink-faint md:hidden">
                 {entry.dates}
               </p>
             </div>
-            <p className="hidden pt-[0.35em] font-meta text-[0.72rem] tracking-[0.14em] text-ink-faint md:block">
+            <p className="hidden pt-[0.35em] font-meta text-[0.78rem] tracking-[0.14em] text-ink-faint md:block">
               {entry.dates}
             </p>
           </li>

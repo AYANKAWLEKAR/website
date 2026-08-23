@@ -24,12 +24,15 @@ export default function ContactTab() {
             <span className="meta-label w-24">{link.label}</span>
             <a
               href={link.href}
-              className="border-b border-ink-muted/50 pb-0.5 text-[1.05rem] text-ink transition-colors duration-200 hover:border-vermilion hover:text-vermilion"
+              className="inline-block border-b border-ink-muted/50 py-1.5 text-[1.05rem] leading-snug text-ink transition-colors duration-200 hover:border-vermilion hover:text-vermilion"
               {...(link.href.startsWith("http")
                 ? { target: "_blank", rel: "noopener noreferrer" }
                 : {})}
             >
               {link.display}
+              {link.href.startsWith("http") && (
+                <span className="sr-only"> (opens in a new tab)</span>
+              )}
             </a>
           </li>
         ))}

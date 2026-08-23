@@ -13,7 +13,7 @@ export default function Shuriken({ className = "" }: { className?: string }) {
   return (
     <motion.span
       aria-hidden="true"
-      className={`inline-block transition-transform duration-300 ease-out group-hover:rotate-45 ${className}`}
+      className={`inline-block ${className}`}
       initial={reduced ? { opacity: 0 } : { rotate: -45, opacity: 0 }}
       whileInView={reduced ? { opacity: 1 } : { rotate: 0, opacity: 1 }}
       viewport={{ once: true, margin: "-10% 0px" }}
@@ -26,7 +26,7 @@ export default function Shuriken({ className = "" }: { className?: string }) {
         xmlns="http://www.w3.org/2000/svg"
         role="presentation"
         focusable="false"
-        className="block"
+        className="block transition-transform duration-300 ease-out group-hover:rotate-45"
       >
         <path
           d="M8 0.4

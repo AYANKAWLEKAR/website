@@ -37,54 +37,55 @@ export default function KatanaUnderline({ className = "" }: { className?: string
         role="presentation"
         focusable="false"
       >
-        {/* Blade — gentle sori curve, tapering to the kissaki at left */}
+        {/* Blade — gentle sori curve, tapering to the kissaki at left.
+            Extended so the blade/handle break clears the middle of the name. */}
         <path
           d="M6 27
-             C 90 17.5, 240 13, 452 15.5
-             L 452 21.5
-             C 250 20.5, 100 24.5, 10 28.6
+             C 100 17, 280 12.5, 500 15
+             L 500 21
+             C 280 20, 110 24, 10 28.6
              C 8 28.7, 5.6 27.9, 6 27 Z"
           fill="var(--ink)"
           fillOpacity="0.92"
         />
         {/* Temper line (hamon suggestion) — faint, brightens slightly on hover */}
         <path
-          d="M 24 25.5 C 120 20.5, 260 17, 448 18.6"
+          d="M 24 25.5 C 130 20, 300 16.5, 496 18.2"
           stroke="var(--paper-light)"
           strokeWidth="0.8"
           strokeOpacity="0.35"
           className="transition-[stroke-opacity] duration-300 group-hover:[stroke-opacity:0.6]"
         />
         {/* Habaki — blade collar */}
-        <rect x="452" y="12.5" width="10" height="11" rx="1" fill="var(--ink)" fillOpacity="0.95" />
+        <rect x="500" y="12.5" width="10" height="11" rx="1" fill="var(--ink)" fillOpacity="0.95" />
         {/* Tsuba — guard */}
-        <ellipse cx="468" cy="18" rx="5" ry="13.5" fill="var(--ink)" />
-        {/* Tiny vermilion sageo knot — the single color accent */}
+        <ellipse cx="516" cy="18" rx="5" ry="13.5" fill="var(--ink)" />
+        {/* Vermilion sageo knot — the composition's single color accent */}
         <path
-          d="M 468 32.5 l 3 3.4 l -3 3.4 l -3 -3.4 Z"
+          d="M 516 30.5 l 4 4.5 l -4 4.5 l -4 -4.5 Z"
           fill="var(--vermilion)"
-          fillOpacity="0.55"
+          fillOpacity="0.88"
         />
         {/* Tsuka — handle with ito-wrap diamonds */}
         <path
-          d="M 474 12.8 L 622 14.6 C 626 14.7, 628 16, 628 18 C 628 20, 626 21.3, 622 21.4 L 474 23.2 Z"
+          d="M 522 12.8 L 620 14.6 C 624 14.7, 626 16, 626 18 C 626 20, 624 21.3, 620 21.4 L 522 23.2 Z"
           fill="var(--ink)"
           fillOpacity="0.9"
         />
         {/* Wrap crossings — pick out diamonds in paper tone */}
         <g stroke="var(--paper)" strokeWidth="1.1" strokeOpacity="0.75">
-          <path d="M 482 13 L 500 23" />
-          <path d="M 500 13 L 482 23" />
-          <path d="M 512 13.3 L 530 22.8" />
-          <path d="M 530 13.3 L 512 22.8" />
-          <path d="M 542 13.6 L 560 22.4" />
-          <path d="M 560 13.6 L 542 22.4" />
-          <path d="M 572 14 L 590 22" />
-          <path d="M 590 14 L 572 22" />
+          <path d="M 530 13 L 546 23" />
+          <path d="M 546 13 L 530 23" />
+          <path d="M 554 13.3 L 570 22.8" />
+          <path d="M 570 13.3 L 554 22.8" />
+          <path d="M 578 13.6 L 594 22.4" />
+          <path d="M 594 13.6 L 578 22.4" />
+          <path d="M 600 14 L 614 22" />
+          <path d="M 614 14 L 600 22" />
         </g>
         {/* Kashira — pommel cap */}
         <path
-          d="M 622 14.5 C 630 14.5, 633 16.2, 633 18 C 633 19.8, 630 21.5, 622 21.5 Z"
+          d="M 620 14.5 C 628 14.5, 631 16.2, 631 18 C 631 19.8, 628 21.5, 620 21.5 Z"
           fill="var(--ink)"
         />
       </svg>

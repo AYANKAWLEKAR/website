@@ -82,7 +82,6 @@ const rmContext = await browser.newContext({
 const rmPage = await rmContext.newPage();
 await rmPage.goto("http://localhost:3000", { waitUntil: "networkidle" });
 await rmPage.waitForTimeout(700);
-const t0 = Date.now();
 await rmPage.click("#tab-about");
 await rmPage.waitForTimeout(450);
 await rmPage.screenshot({ path: `${OUT}/09-reduced-motion-about.png` });

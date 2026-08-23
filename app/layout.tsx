@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
-import { Yuji_Mai, Noto_Serif, IBM_Plex_Mono } from "next/font/google";
+import { Noto_Serif, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const displayFont = Yuji_Mai({
-  subsets: ["latin"],
+// Self-hosted latin subset (SIL OFL). The Google package ships 142 CJK
+// subset files; only Latin glyphs are ever rendered in the display face.
+const displayFont = localFont({
+  src: "./fonts/yuji-mai-latin.woff2",
   weight: "400",
+  display: "swap",
   variable: "--font-display",
 });
 

@@ -29,10 +29,10 @@ export default function ProjectsTab() {
                 <p className="mt-3 max-w-[58ch] leading-[1.7] text-ink">
                   {project.thesis}
                 </p>
-                <p className="mt-4 font-meta text-[0.72rem] uppercase tracking-[0.16em] text-ink-faint">
+                <p className="mt-4 font-meta text-[0.78rem] uppercase tracking-[0.14em] text-ink-faint">
                   {project.stack}
                 </p>
-                <p className="mt-2 max-w-[58ch] leading-[1.7] text-ink-muted">
+                <p className="mt-2 max-w-[58ch] text-[0.95rem] leading-[1.7] text-ink-muted">
                   {project.outcome}
                 </p>
               </div>
