@@ -24,7 +24,15 @@ export default function ProjectsTab() {
               </p>
               <div>
                 <h3 className="text-[1.35rem] font-semibold leading-snug text-ink">
-                  {project.title}
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border-b border-transparent transition-colors duration-200 hover:border-vermilion hover:text-vermilion"
+                  >
+                    {project.title}
+                    <span className="sr-only"> — GitHub repository (opens in a new tab)</span>
+                  </a>
                 </h3>
                 <p className="mt-3 max-w-[58ch] leading-[1.7] text-ink">
                   {project.thesis}

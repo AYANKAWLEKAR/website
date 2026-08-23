@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { animate, motion, useReducedMotion } from "motion/react";
 import type { Variants } from "motion/react";
 import KatanaUnderline from "@/components/KatanaUnderline";
 import { owner } from "@/lib/content";
@@ -55,8 +56,64 @@ export default function HomeTab() {
   const reduced = useReducedMotion();
   const variants = reduced ? stageReduced : stage;
 
+  // Murky liquid-ink reveal: a turbulence-displacement filter warps the
+  // overview like ink diffusing through water, settling as the noise and
+  // displacement animate to zero while the color soaks from sepia to ink.
+  const [inkSettled, setInkSettled] = useState(false);
+  const turbRef = useRef<SVGFETurbulenceElement | null>(null);
+  const dispRef = useRef<SVGFEDisplacementMapElement | null>(null);
+  const blurRef = useRef<SVGFEGaussianBlurElement | null>(null);
+
+  useEffect(() => {
+    if (reduced) return;
+    const controls = animate(0, 1, {
+      duration: 1.7,
+      delay: 0.85,
+      ease: [0.3, 0.55, 0.35, 1],
+      onUpdate: (t) => {
+        const u = 1 - t;
+        dispRef.current?.setAttribute("scale", (110 * u * u).toFixed(1));
+        blurRef.current?.setAttribute(
+          "stdDeviation",
+          (7 * Math.pow(u, 1.4)).toFixed(2)
+        );
+        // The murk roils: noise frequency drifts as the ink settles
+        turbRef.current?.setAttribute(
+          "baseFrequency",
+          `${(0.011 + 0.024 * u).toFixed(4)} ${(0.026 + 0.04 * u).toFixed(4)}`
+        );
+      },
+      onComplete: () => setInkSettled(true),
+    });
+    return () => controls.stop();
+  }, [reduced]);
+
   return (
     <section className="flex min-h-[72dvh] flex-col">
+      <svg aria-hidden="true" focusable="false" className="absolute h-0 w-0">
+        <defs>
+          <filter id="ink-murk" x="-25%" y="-25%" width="150%" height="150%">
+            <feTurbulence
+              ref={turbRef}
+              type="fractalNoise"
+              baseFrequency="0.035 0.066"
+              numOctaves="3"
+              seed="4"
+              result="noise"
+            />
+            <feDisplacementMap
+              ref={dispRef}
+              in="SourceGraphic"
+              in2="noise"
+              scale="110"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+            <feGaussianBlur ref={blurRef} stdDeviation="7" />
+          </filter>
+        </defs>
+      </svg>
+
       <div className="my-auto">
         {/* Signature block: the katana underline spans exactly the name's
             rendered width, and the seal sits beside it like a stamp. */}
@@ -74,36 +131,27 @@ export default function HomeTab() {
           <KatanaUnderline className="mt-4 w-full" />
         </motion.div>
 
-        {reduced ? (
-          <motion.p
-            className="mx-auto mt-12 max-w-[54ch] text-center text-[clamp(1.02rem,1.8vw,1.2rem)] leading-[1.7] text-ink"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.18 }}
-          >
-            {owner.positioning}
-          </motion.p>
-        ) : (
-          <motion.p
-            className="mx-auto mt-12 max-w-[54ch] text-center text-[clamp(1.02rem,1.8vw,1.2rem)] leading-[1.7]"
-            // Ink-soak reveal: the overview bleeds in soft and pale, then
-            // dries crisp and dark, like ink settling into the paper.
-            initial={{ opacity: 0, filter: "blur(14px)", color: "#8c7455" }}
-            animate={{
-              opacity: [0, 0.72, 1],
-              filter: ["blur(14px)", "blur(4px)", "blur(0px)"],
-              color: ["#8c7455", "#503c28", "#24180f"],
-            }}
-            transition={{
-              duration: 1.15,
-              delay: 0.85,
-              times: [0, 0.55, 1],
-              ease: "easeOut",
-            }}
-          >
-            {owner.positioning}
-          </motion.p>
-        )}
+        <motion.p
+          className="mx-auto mt-12 max-w-[52ch] text-center font-display text-[clamp(1.1rem,2vw,1.4rem)] leading-[1.9]"
+          style={reduced || inkSettled ? undefined : { filter: "url(#ink-murk)" }}
+          initial={reduced ? { opacity: 0 } : { opacity: 0, color: "#8c7455" }}
+          animate={
+            reduced
+              ? { opacity: 1 }
+              : {
+                  opacity: [0, 0.55, 1],
+                  color: ["#8c7455", "#503c28", "#24180f"],
+                }
+          }
+          transition={
+            reduced
+              ? { duration: 0.18 }
+              : { duration: 1.7, delay: 0.85, times: [0, 0.5, 1], ease: "easeOut" }
+          }
+        >
+          {owner.positioning}{" "}
+          <span className="text-vermilion">{owner.availability}</span>
+        </motion.p>
       </div>
 
       <motion.div
@@ -111,7 +159,7 @@ export default function HomeTab() {
         variants={variants}
         initial="hidden"
         animate="show"
-        custom={reduced ? 0 : 1.15}
+        custom={reduced ? 0 : 1.35}
       >
         <hr className="ink-rule" />
         <div className="mt-4 flex flex-wrap gap-x-12 gap-y-3 md:justify-between">

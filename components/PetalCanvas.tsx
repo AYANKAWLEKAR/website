@@ -19,7 +19,7 @@ type Petal = {
 
 const PETAL_COLORS = ["#d37b91", "#e39aab", "#efb7c3", "#c9748c"];
 const PETAL_EDGE = "#b95f78";
-const MAX_PETALS = 22;
+const MAX_PETALS = 24;
 
 export default function PetalCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -45,11 +45,11 @@ export default function PetalCanvas() {
     let raf = 0;
     let running = false;
     let lastFrame = 0;
-    let lastSpawn = 0;
-    let nextSpawnGap = 40;
-    let prevX = 0;
-    let prevY = 0;
-    let hasPrev = false;
+    // Anchor of the emission path — petals are laid down every EMIT_SPACING
+    // px of pointer travel, interpolated along the true cursor path.
+    let anchor: { x: number; y: number } | null = null;
+    const EMIT_SPACING = 30;
+    const TELEPORT = 220; // pointer re-entered the window; don't bridge the jump
 
     const disabled = () => reduced.matches || coarse.matches;
 
@@ -118,38 +118,64 @@ export default function PetalCanvas() {
       }
     };
 
+    const makePetal = (x: number, y: number, ux: number, uy: number, now: number): Petal => ({
+      // On the path, with only a whisper of jitter so the trail stays true
+      x: x + (Math.random() - 0.5) * 6,
+      y: y + (Math.random() - 0.5) * 6,
+      // Carried briefly along the stroke direction, then wind and gravity
+      vx: ux * 26 + (Math.random() - 0.5) * 16,
+      vy: uy * 26 + 22 + Math.random() * 26,
+      rotation: Math.random() * Math.PI * 2,
+      spin: (Math.random() - 0.5) * 3.4,
+      scale: 1.4 + Math.random() * 0.9,
+      born: now,
+      life: 700 + Math.random() * 500,
+      color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
+      phase: Math.random() * Math.PI * 2,
+      sway: 2 + Math.random() * 3,
+    });
+
+    // Coalesced pointer samples expose every un-coalesced position change
+    // (MDN: PointerEvent.getCoalescedEvents), so fast strokes emit petals
+    // along the real path instead of at sparse sampled points.
     const onMove = (e: PointerEvent) => {
       if (disabled()) return;
       if (e.pointerType !== "mouse") return;
+      const samples =
+        typeof e.getCoalescedEvents === "function" && e.getCoalescedEvents().length > 0
+          ? e.getCoalescedEvents()
+          : [e];
       const now = performance.now();
-      if (hasPrev && now - lastSpawn >= nextSpawnGap && petals.length < MAX_PETALS) {
-        lastSpawn = now;
-        nextSpawnGap = 35 + Math.random() * 20;
-        // Spawn slightly behind the cursor, along its direction of travel
-        const dx = e.clientX - prevX;
-        const dy = e.clientY - prevY;
-        const mag = Math.max(Math.hypot(dx, dy), 0.001);
-        const bx = e.clientX - (dx / mag) * (8 + Math.random() * 6);
-        const by = e.clientY - (dy / mag) * (8 + Math.random() * 6);
-        petals.push({
-          x: bx + (Math.random() - 0.5) * 10,
-          y: by + (Math.random() - 0.5) * 10,
-          vx: (Math.random() - 0.5) * 24,
-          vy: 34 + Math.random() * 40,
-          rotation: Math.random() * Math.PI * 2,
-          spin: (Math.random() - 0.5) * 3.4,
-          scale: 1.4 + Math.random() * 0.9,
-          born: now,
-          life: 700 + Math.random() * 500,
-          color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
-          phase: Math.random() * Math.PI * 2,
-          sway: 2 + Math.random() * 3,
-        });
-        ensureLoop();
+      let spawned = false;
+      for (const s of samples) {
+        const x = s.clientX;
+        const y = s.clientY;
+        if (!anchor) {
+          anchor = { x, y };
+          continue;
+        }
+        let dx = x - anchor.x;
+        let dy = y - anchor.y;
+        let dist = Math.hypot(dx, dy);
+        if (dist > TELEPORT) {
+          anchor = { x, y };
+          continue;
+        }
+        while (dist >= EMIT_SPACING) {
+          const ux = dx / dist;
+          const uy = dy / dist;
+          anchor.x += ux * EMIT_SPACING;
+          anchor.y += uy * EMIT_SPACING;
+          if (petals.length < MAX_PETALS) {
+            petals.push(makePetal(anchor.x, anchor.y, ux, uy, now));
+            spawned = true;
+          }
+          dx = x - anchor.x;
+          dy = y - anchor.y;
+          dist = Math.hypot(dx, dy);
+        }
       }
-      prevX = e.clientX;
-      prevY = e.clientY;
-      hasPrev = true;
+      if (spawned) ensureLoop();
     };
 
     const onVisibility = () => {
@@ -160,9 +186,14 @@ export default function PetalCanvas() {
     const onPreferenceChange = () => {
       if (disabled()) {
         petals.length = 0;
+        anchor = null;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     };
+
+    if (process.env.NODE_ENV === "development") {
+      (window as unknown as Record<string, unknown>).__petalDebug = { petals };
+    }
 
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("resize", resize);

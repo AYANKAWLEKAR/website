@@ -1,7 +1,8 @@
 export const owner = {
   name: "Ayan Kawlekar",
   positioning:
-    "Sophomore at Berkeley studying applied math and data science. Interested in AI agents and infrastructure. Strong data science and backend fundamentals with previous experience as a swe @ seed chip-design startup and also at an investment fund. Looking to join fast-paced teams working on building innovative agentic products. Open to working Winter & Summer 2027.",
+    "Sophomore at Berkeley studying applied math and data science. Interested in AI agents and infrastructure. Strong data science and backend fundamentals with previous experience as a swe @ seed chip-design startup and also at an investment fund. Looking to join fast-paced teams working on building innovative agentic products.",
+  availability: "Open to working Winter & Summer 2027.",
   location: "Berkeley, California",
   interests: "AI/ML · robotics · finance · startups",
   currently: "PM intern @ Oracle — agentic demos on the 26ai database",
@@ -81,11 +82,13 @@ export type ProjectEntry = {
   thesis: string;
   stack: string;
   outcome: string;
+  link: string;
 };
 
 export const projects: ProjectEntry[] = [
   {
     index: "01",
+    link: "https://github.com/AYANKAWLEKAR/RL",
     title: "StockSmart",
     thesis:
       "A retail restocking system that pairs a Temporal Fusion Transformer forecaster with a reinforcement-learning ordering policy.",
@@ -95,6 +98,7 @@ export const projects: ProjectEntry[] = [
   },
   {
     index: "02",
+    link: "https://github.com/AYANKAWLEKAR/SourcingEngine",
     title: "Private Equity Sourcing Engine",
     thesis:
       "A tool-calling LLM agent and pgvector RAG retriever that convert natural-language buy-boxes into executable filter rulesets.",
@@ -104,6 +108,7 @@ export const projects: ProjectEntry[] = [
   },
   {
     index: "03",
+    link: "https://github.com/AYANKAWLEKAR/MemCache",
     title: "Memcache API",
     thesis:
       "Episodic memory infrastructure for long-running personal agents, improving context quality at retrieval time.",
