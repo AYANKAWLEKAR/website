@@ -19,8 +19,8 @@ type SmokeParticle = {
   sway: number;
 };
 
-const MAX_PARTICLES = 120;
-const BURST_COUNT = 55;
+const MAX_PARTICLES = 300;
+const BURST_COUNT = 165;
 
 /**
  * Incense/ink smoke layer for the tab transition. Listens for the
@@ -38,11 +38,13 @@ export default function SmokeCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Smoke is soft and low-frequency, so it is rendered at half resolution
+    // and scaled up by CSS: visually identical, a quarter of the fill cost.
+    // (Every draw below multiplies by RES, not devicePixelRatio.)
+    const RES = 0.5;
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.width = Math.max(1, Math.floor(window.innerWidth * RES));
+      canvas.height = Math.max(1, Math.floor(window.innerHeight * RES));
     };
     resize();
 
@@ -90,7 +92,7 @@ export default function SmokeCanvas() {
           t < 0.15 ? (t / 0.15) * p.peakAlpha : p.peakAlpha * (1 - (t - 0.15) / 0.85);
         const scale = p.startScale + (p.endScale - p.startScale) * t;
         const sprite = sprites[p.spriteIndex];
-        const size = 128 * scale * dpr;
+        const size = 128 * scale * RES;
         // Stamp three offsets along a slowly curling vector so each particle
         // reads as a ribboned strand rather than one round blob.
         const curl = p.phase + t * 2;
@@ -101,8 +103,8 @@ export default function SmokeCanvas() {
           ctx.globalAlpha = Math.max(alpha * (1 - s * 0.28), 0);
           ctx.drawImage(
             sprite,
-            (p.x + ox) * dpr - size / 2,
-            (p.y + oy) * dpr - size / 2,
+            (p.x + ox) * RES - size / 2,
+            (p.y + oy) * RES - size / 2,
             size,
             size
           );
@@ -119,7 +121,7 @@ export default function SmokeCanvas() {
 
     const ensureLoop = () => {
       // The host may size the viewport after mount; recover from a 0×0 canvas
-      const expected = Math.floor(window.innerWidth * dpr);
+      const expected = Math.floor(window.innerWidth * RES);
       if (canvas.width !== expected && window.innerWidth > 0) resize();
       if (!running) {
         running = true;
@@ -133,20 +135,20 @@ export default function SmokeCanvas() {
       if (document.hidden || window.innerWidth === 0) return;
       const w = window.innerWidth;
       const h = window.innerHeight;
-      // Hug the content column, biased toward the text block's lower half,
-      // so smoke visibly rises off the dissolving copy.
-      const x = w * (0.28 + Math.random() * 0.44);
-      const y = h * (0.3 + Math.random() * 0.35);
+      // Fill the frame: the whole viewport goes up in smoke, biased a little
+      // toward the lower half so the mass reads as rising rather than falling.
+      const x = w * (0.02 + Math.random() * 0.96);
+      const y = h * (0.12 + Math.random() * 0.92);
       particles.push({
         x,
         y,
-        vx: (Math.random() - 0.5) * 26,
-        vy: -(34 + Math.random() * 56),
+        vx: (Math.random() - 0.5) * 44,
+        vy: -(90 + Math.random() * 140),
         born: performance.now(),
-        life: 900 + Math.random() * 500,
-        startScale: 0.3 + Math.random() * 0.35,
-        endScale: 0.8 + Math.random() * 0.8,
-        peakAlpha: 0.06 + Math.random() * 0.08,
+        life: 620 + Math.random() * 380,
+        startScale: 0.6 + Math.random() * 0.6,
+        endScale: 1.9 + Math.random() * 1.3,
+        peakAlpha: 0.13 + Math.random() * 0.11,
         spriteIndex: Math.floor(Math.random() * sprites.length),
         phase: Math.random() * Math.PI * 2,
         sway: 1.4 + Math.random() * 2.2,
@@ -157,9 +159,10 @@ export default function SmokeCanvas() {
     const onBurst = () => {
       if (reduced.matches) return;
       // Mobile gets a lighter burst
-      const count = window.innerWidth < 768 ? Math.floor(BURST_COUNT / 2.5) : BURST_COUNT;
+      const count = window.innerWidth < 768 ? Math.floor(BURST_COUNT / 2.2) : BURST_COUNT;
       for (let i = 0; i < count; i++) {
-        const delay = Math.random() * 600; // staggered emission over the dissolve
+        // Tight stagger: the screen clouds over early in the dissolve
+        const delay = Math.random() * 260;
         const id = setTimeout(() => {
           spawnTimeouts.delete(id);
           spawnOne();

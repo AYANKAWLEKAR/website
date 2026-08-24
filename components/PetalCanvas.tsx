@@ -14,12 +14,20 @@ type Petal = {
   life: number;
   color: string;
   phase: number;
-  sway: number;
 };
 
 const PETAL_COLORS = ["#d37b91", "#e39aab", "#efb7c3", "#c9748c"];
 const PETAL_EDGE = "#b95f78";
-const MAX_PETALS = 24;
+
+// A short trail: few petals, brief lives. Each one is launched with the
+// cursor's own velocity, then bled off by drag so it settles where the
+// cursor was rather than sailing away from it.
+const MAX_PETALS = 11;
+const EMIT_SPACING = 19; // px of pointer travel between petals
+const TELEPORT = 220; // pointer re-entered the window; don't bridge the jump
+const MAX_SPEED = 2600; // px/s clamp against flick spikes
+const DRAG = 3.6; // per-second velocity decay
+const GRAVITY = 150; // takes over once drag has eaten the launch speed
 
 export default function PetalCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -45,27 +53,29 @@ export default function PetalCanvas() {
     let raf = 0;
     let running = false;
     let lastFrame = 0;
-    // Anchor of the emission path — petals are laid down every EMIT_SPACING
-    // px of pointer travel, interpolated along the true cursor path.
+
+    // Emission anchor walks the true pointer path; velocity is smoothed
+    // across samples so a petal inherits the cursor's current motion.
     let anchor: { x: number; y: number } | null = null;
-    const EMIT_SPACING = 30;
-    const TELEPORT = 220; // pointer re-entered the window; don't bridge the jump
+    let lastSample: { x: number; y: number; t: number } | null = null;
+    let velX = 0;
+    let velY = 0;
 
     const disabled = () => reduced.matches || coarse.matches;
 
     const drawPetal = (p: Petal, now: number) => {
       const t = (now - p.born) / p.life;
       if (t >= 1) return;
-      const fade = t < 0.6 ? 1 : 1 - (t - 0.6) / 0.4;
-      // Tumbling foreshortening: petals flip edge-on and back as they fall
-      const tumble = 0.35 + 0.65 * Math.abs(Math.sin(p.rotation + now / 300 + p.phase));
+      const fade = t < 0.45 ? 1 : 1 - (t - 0.45) / 0.55;
+      // Tumbling foreshortening sells "petal" over "dot"
+      const tumble =
+        0.35 + 0.65 * Math.abs(Math.sin(p.rotation + now / 320 + p.phase));
       ctx.save();
       ctx.translate(p.x * dpr, p.y * dpr);
       ctx.rotate(p.rotation);
       ctx.scale(p.scale * dpr, p.scale * dpr * tumble);
       ctx.globalAlpha = 0.85 * fade;
       ctx.fillStyle = p.color;
-      // Sakura petal: rounded body with a small notch at the tip
       ctx.beginPath();
       ctx.moveTo(0, 4.6);
       ctx.bezierCurveTo(-4.4, 1.8, -3.9, -3.4, -0.9, -4.4);
@@ -74,7 +84,6 @@ export default function PetalCanvas() {
       ctx.bezierCurveTo(3.9, -3.4, 4.4, 1.8, 0, 4.6);
       ctx.closePath();
       ctx.fill();
-      // Drawn, ink-adjacent edge
       ctx.globalAlpha = 0.4 * fade;
       ctx.strokeStyle = PETAL_EDGE;
       ctx.lineWidth = 0.6;
@@ -86,16 +95,18 @@ export default function PetalCanvas() {
       const dt = lastFrame ? Math.min((now - lastFrame) / 1000, 0.05) : 1 / 60;
       lastFrame = now;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const drag = Math.exp(-DRAG * dt);
       for (let i = petals.length - 1; i >= 0; i--) {
         const p = petals[i];
-        const age = now - p.born;
-        if (age >= p.life) {
+        if (now - p.born >= p.life) {
           petals.splice(i, 1);
           continue;
         }
-        p.x += (p.vx + Math.sin((now / 1000) * p.sway + p.phase) * 14) * dt;
+        p.vx *= drag;
+        p.vy *= drag;
+        p.vy += GRAVITY * dt;
+        p.x += p.vx * dt;
         p.y += p.vy * dt;
-        p.vy += 26 * dt; // gentle gravity
         p.rotation += p.spin * dt;
         drawPetal(p, now);
       }
@@ -108,7 +119,7 @@ export default function PetalCanvas() {
     };
 
     const ensureLoop = () => {
-      // The host may size the viewport after mount; recover from a 0×0 canvas
+      // The host may size the viewport after mount; recover from a 0x0 canvas
       const expected = Math.floor(window.innerWidth * dpr);
       if (canvas.width !== expected && window.innerWidth > 0) resize();
       if (!running) {
@@ -118,38 +129,56 @@ export default function PetalCanvas() {
       }
     };
 
-    const makePetal = (x: number, y: number, ux: number, uy: number, now: number): Petal => ({
-      // On the path, with only a whisper of jitter so the trail stays true
-      x: x + (Math.random() - 0.5) * 6,
-      y: y + (Math.random() - 0.5) * 6,
-      // Carried briefly along the stroke direction, then wind and gravity
-      vx: ux * 26 + (Math.random() - 0.5) * 16,
-      vy: uy * 26 + 22 + Math.random() * 26,
+    const makePetal = (x: number, y: number, now: number): Petal => ({
+      x: x + (Math.random() - 0.5) * 5,
+      y: y + (Math.random() - 0.5) * 5,
+      // Launched at a fraction of the cursor's own velocity, so the trail
+      // stretches when the pointer is fast and stays tight when it is slow
+      vx: velX * 0.5 + (Math.random() - 0.5) * 30,
+      vy: velY * 0.5 + (Math.random() - 0.5) * 30,
       rotation: Math.random() * Math.PI * 2,
-      spin: (Math.random() - 0.5) * 3.4,
-      scale: 1.4 + Math.random() * 0.9,
+      spin: (Math.random() - 0.5) * 4,
+      scale: 1.3 + Math.random() * 0.7,
       born: now,
-      life: 700 + Math.random() * 500,
+      life: 450 + Math.random() * 260,
       color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
       phase: Math.random() * Math.PI * 2,
-      sway: 2 + Math.random() * 3,
     });
 
-    // Coalesced pointer samples expose every un-coalesced position change
-    // (MDN: PointerEvent.getCoalescedEvents), so fast strokes emit petals
-    // along the real path instead of at sparse sampled points.
+    // Coalesced samples expose every un-coalesced position change
+    // (MDN: PointerEvent.getCoalescedEvents), so fast strokes both measure
+    // velocity accurately and lay petals along the real path.
     const onMove = (e: PointerEvent) => {
-      if (disabled()) return;
-      if (e.pointerType !== "mouse") return;
+      if (disabled() || e.pointerType !== "mouse") return;
       const samples =
-        typeof e.getCoalescedEvents === "function" && e.getCoalescedEvents().length > 0
+        typeof e.getCoalescedEvents === "function" &&
+        e.getCoalescedEvents().length > 0
           ? e.getCoalescedEvents()
           : [e];
       const now = performance.now();
       let spawned = false;
+
       for (const s of samples) {
         const x = s.clientX;
         const y = s.clientY;
+
+        if (lastSample) {
+          const dts = (s.timeStamp - lastSample.t) / 1000;
+          if (dts > 0 && dts < 0.1) {
+            const ivx = (x - lastSample.x) / dts;
+            const ivy = (y - lastSample.y) / dts;
+            // Light smoothing keeps direction honest without lagging turns
+            velX = velX * 0.45 + ivx * 0.55;
+            velY = velY * 0.45 + ivy * 0.55;
+            const speed = Math.hypot(velX, velY);
+            if (speed > MAX_SPEED) {
+              velX = (velX / speed) * MAX_SPEED;
+              velY = (velY / speed) * MAX_SPEED;
+            }
+          }
+        }
+        lastSample = { x, y, t: s.timeStamp };
+
         if (!anchor) {
           anchor = { x, y };
           continue;
@@ -162,14 +191,14 @@ export default function PetalCanvas() {
           continue;
         }
         while (dist >= EMIT_SPACING) {
-          const ux = dx / dist;
-          const uy = dy / dist;
-          anchor.x += ux * EMIT_SPACING;
-          anchor.y += uy * EMIT_SPACING;
-          if (petals.length < MAX_PETALS) {
-            petals.push(makePetal(anchor.x, anchor.y, ux, uy, now));
-            spawned = true;
-          }
+          anchor.x += (dx / dist) * EMIT_SPACING;
+          anchor.y += (dy / dist) * EMIT_SPACING;
+          // At the cap, retire the oldest rather than skipping the spawn:
+          // the trail must stay pinned to the cursor, with the cap setting
+          // its length. Skipping would strand the trail behind fast strokes.
+          if (petals.length >= MAX_PETALS) petals.shift();
+          petals.push(makePetal(anchor.x, anchor.y, now));
+          spawned = true;
           dx = x - anchor.x;
           dy = y - anchor.y;
           dist = Math.hypot(dx, dy);
@@ -187,12 +216,16 @@ export default function PetalCanvas() {
       if (disabled()) {
         petals.length = 0;
         anchor = null;
+        lastSample = null;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
     };
 
     if (process.env.NODE_ENV === "development") {
-      (window as unknown as Record<string, unknown>).__petalDebug = { petals };
+      (window as unknown as Record<string, unknown>).__petalDebug = {
+        petals,
+        velocity: () => ({ velX, velY }),
+      };
     }
 
     window.addEventListener("pointermove", onMove, { passive: true });

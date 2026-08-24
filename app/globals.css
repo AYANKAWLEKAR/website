@@ -174,11 +174,16 @@ body {
   color: var(--ink-faint);
 }
 
-/* Decorative canvas layers must never intercept interaction */
+/* Decorative canvas layers must never intercept interaction.
+   width/height are required: `inset: 0` alone does not stretch a replaced
+   element, so a canvas would otherwise render at its intrinsic bitmap size
+   (twice the viewport on a HiDPI display, halving every drawn position). */
 .petal-canvas,
 .smoke-canvas {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 

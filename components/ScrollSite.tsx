@@ -8,6 +8,7 @@ import ExperienceTab from "@/components/tabs/ExperienceTab";
 import ProjectsTab from "@/components/tabs/ProjectsTab";
 import AboutTab from "@/components/tabs/AboutTab";
 import ContactTab from "@/components/tabs/ContactTab";
+import PetalCanvas from "@/components/PetalCanvas";
 import SmokeCanvas, { SMOKE_EVENT } from "@/components/SmokeCanvas";
 
 const TABS = [
@@ -128,6 +129,7 @@ export default function ScrollSite() {
   return (
     <div className="scroll-content">
       <SmokeCanvas />
+      <PetalCanvas />
       {/* PetalCanvas removed for now — component kept at
           components/PetalCanvas.tsx for when the trail returns */}
 

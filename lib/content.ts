@@ -1,11 +1,12 @@
 export const owner = {
   name: "Ayan Kawlekar",
   positioning:
-    "Sophomore at Berkeley studying applied math and data science. Interested in AI agents and infrastructure. Strong data science and backend fundamentals with previous experience as a swe @ seed chip-design startup and also at an investment fund. Looking to join fast-paced teams working on building innovative agentic products.",
+    "Sophomore at Berkeley studying applied math and data science. Interested in AI agents and infrastructure. Strong data science and backend fundamentals with previous experience as a swe @ seed chip-design startup and @ pe fund. Looking to join fast-paced teams working on building innovative agentic products.",
   availability: "Open to working Winter & Summer 2027.",
   location: "Berkeley, California",
   interests: "AI/ML · robotics · finance · startups",
   currently: "PM intern @ Oracle — agentic demos on the 26ai database",
+  forFun: "Learning to golf",
   email: "ayan_kawlekar@berkeley.edu",
   github: "https://github.com/AYANKAWLEKAR",
   linkedin: "https://www.linkedin.com/in/ayan-kawlekar",
@@ -116,6 +117,19 @@ export const projects: ProjectEntry[] = [
     outcome:
       "Celery-driven summarization with Redis conversation caching and a Neo4j graph of entity and episode relations.",
   },
+];
+
+export type Favorite = {
+  label: string;
+  /** Drop a file in /public and set the path here to fill the frame. */
+  image?: string;
+  alt?: string;
+};
+
+export const favorites: Favorite[] = [
+  { label: "My favorite artist" },
+  { label: "My favorite show" },
+  { label: "My favorite video game" },
 ];
 
 export const about = {

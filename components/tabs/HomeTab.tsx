@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { animate, motion, useReducedMotion } from "motion/react";
 import type { Variants } from "motion/react";
 import KatanaUnderline from "@/components/KatanaUnderline";
-import { owner } from "@/lib/content";
+import ArtifactFrame from "@/components/ArtifactFrame";
+import { favorites, owner } from "@/lib/content";
 
 const stage: Variants = {
   hidden: { opacity: 0, y: 10 },
@@ -163,7 +164,7 @@ export default function HomeTab() {
         custom={reduced ? 0 : 1.35}
       >
         <hr className="ink-rule" />
-        <div className="mt-4 flex flex-wrap gap-x-12 gap-y-3 md:justify-between">
+        <div className="mt-4 grid gap-x-10 gap-y-3 md:grid-cols-3">
           <p className="meta-label">
             Currently —{" "}
             <span className="font-body normal-case tracking-normal text-ink-muted">
@@ -171,6 +172,12 @@ export default function HomeTab() {
             </span>
           </p>
           <p className="meta-label">
+            What I&rsquo;m doing for fun —{" "}
+            <span className="font-body normal-case tracking-normal text-ink-muted">
+              {owner.forFun}
+            </span>
+          </p>
+          <p className="meta-label md:text-right">
             Interests —{" "}
             <span className="font-body normal-case tracking-normal text-ink-muted">
               {owner.interests}
@@ -178,6 +185,39 @@ export default function HomeTab() {
           </p>
         </div>
       </motion.div>
+
+      <FavoritesTriptych reduced={!!reduced} />
+    </section>
+  );
+}
+
+/** Three framed plates, labelled in the brush display face. */
+function FavoritesTriptych({ reduced }: { reduced: boolean }) {
+  return (
+    <section aria-labelledby="favorites-heading" className="pt-24 md:pt-28">
+      <h2 id="favorites-heading" className="sr-only">
+        A few favorites
+      </h2>
+      <ul className="mx-auto grid max-w-5xl gap-x-12 gap-y-14 sm:grid-cols-3">
+        {favorites.map((fav, i) => (
+          <motion.li
+            key={fav.label}
+            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
+            whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={
+              reduced
+                ? { duration: 0.18 }
+                : { duration: 0.6, delay: i * 0.09, ease: [0.16, 1, 0.3, 1] }
+            }
+          >
+            <h3 className="mb-5 text-center font-display text-[clamp(1.5rem,3.1vw,2.15rem)] leading-tight text-ink">
+              {fav.label}
+            </h3>
+            <ArtifactFrame image={fav.image} alt={fav.alt} />
+          </motion.li>
+        ))}
+      </ul>
     </section>
   );
 }
