@@ -115,7 +115,10 @@ export default function HomeTab() {
         </defs>
       </svg>
 
-      <div className="my-auto">
+      <div className="my-auto grid items-center gap-x-12 gap-y-16 md:grid-cols-[168px_1fr]">
+        <FavoritesColumn reduced={!!reduced} variants={variants} />
+
+        <div className="order-1 min-w-0 md:order-2">
         {/* Signature block: the katana underline spans exactly the name's
             rendered width, and the seal sits beside it like a stamp. */}
         <motion.div
@@ -154,6 +157,7 @@ export default function HomeTab() {
           {owner.positioning}{" "}
           <span className="text-vermilion">{owner.availability}</span>
         </motion.p>
+        </div>
       </div>
 
       <motion.div
@@ -186,38 +190,44 @@ export default function HomeTab() {
         </div>
       </motion.div>
 
-      <FavoritesTriptych reduced={!!reduced} />
     </section>
   );
 }
 
-/** Three framed plates, labelled in the brush display face. */
-function FavoritesTriptych({ reduced }: { reduced: boolean }) {
+/** Three small framed plates stacked down the left of the signature block. */
+function FavoritesColumn({
+  reduced,
+  variants,
+}: {
+  reduced: boolean;
+  variants: Variants;
+}) {
   return (
-    <section aria-labelledby="favorites-heading" className="pt-24 md:pt-28">
+    <aside
+      aria-labelledby="favorites-heading"
+      className="order-2 mx-auto w-[168px] md:order-1 md:mx-0"
+    >
       <h2 id="favorites-heading" className="sr-only">
         A few favorites
       </h2>
-      <ul className="mx-auto grid max-w-5xl gap-x-12 gap-y-14 sm:grid-cols-3">
+      <ul className="grid gap-y-6">
         {favorites.map((fav, i) => (
           <motion.li
             key={fav.label}
-            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 18 }}
-            whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.35 }}
-            transition={
-              reduced
-                ? { duration: 0.18 }
-                : { duration: 0.6, delay: i * 0.09, ease: [0.16, 1, 0.3, 1] }
-            }
+            variants={variants}
+            initial="hidden"
+            animate="show"
+            custom={reduced ? 0 : 0.3 + i * 0.12}
           >
-            <h3 className="mb-5 text-center font-display text-[clamp(1.5rem,3.1vw,2.15rem)] leading-tight text-ink">
+            {/* Fixed label height keeps the plates on an even rhythm
+                whether the label runs to one line or two. */}
+            <h3 className="mb-2 flex min-h-[2.5em] items-end justify-center text-center font-display text-[1.05rem] leading-tight text-ink">
               {fav.label}
             </h3>
             <ArtifactFrame image={fav.image} alt={fav.alt} />
           </motion.li>
         ))}
       </ul>
-    </section>
+    </aside>
   );
 }

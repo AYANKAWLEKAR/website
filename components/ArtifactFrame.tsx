@@ -41,7 +41,7 @@ export default function ArtifactFrame({
       >
         <g
           stroke="var(--ink)"
-          strokeWidth="2.8"
+          strokeWidth="4"
           strokeLinecap="butt"
         >
           <rect x="4" y="4" width="192" height="192" />
