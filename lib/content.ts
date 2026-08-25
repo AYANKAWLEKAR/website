@@ -124,12 +124,28 @@ export type Favorite = {
   /** Drop a file in /public and set the path here to fill the frame. */
   image?: string;
   alt?: string;
+  /** Focal point for the square crop, as an object-position value. */
+  focus?: string;
 };
 
 export const favorites: Favorite[] = [
-  { label: "My favorite artist" },
-  { label: "My favorite show" },
-  { label: "My favorite video game" },
+  {
+    label: "My favorite artist",
+    image: "/favorites/tame-impala-currents.jpeg",
+    alt: "Tame Impala, Currents album art",
+  },
+  {
+    label: "My favorite show",
+    image: "/favorites/game-of-thrones.jpeg",
+    alt: "Game of Thrones artwork: Jon Snow with the direwolf Ghost",
+    focus: "center 28%",
+  },
+  {
+    label: "My favorite video game",
+    image: "/favorites/warframe.jpeg",
+    alt: "Warframe artwork: an armored warframe on a hillside",
+    focus: "center 21%",
+  },
 ];
 
 export const about = {

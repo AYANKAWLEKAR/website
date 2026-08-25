@@ -115,7 +115,7 @@ export default function HomeTab() {
         </defs>
       </svg>
 
-      <div className="my-auto grid items-center gap-x-12 gap-y-16 md:grid-cols-[168px_1fr]">
+      <div className="my-auto grid items-center gap-x-12 gap-y-16 md:grid-cols-[clamp(108px,16vh,164px)_1fr]">
         <FavoritesColumn reduced={!!reduced} variants={variants} />
 
         <div className="order-1 min-w-0 md:order-2">
@@ -161,7 +161,7 @@ export default function HomeTab() {
       </div>
 
       <motion.div
-        className="mt-auto pt-14"
+        className="mt-auto pt-10"
         variants={variants}
         initial="hidden"
         animate="show"
@@ -205,12 +205,12 @@ function FavoritesColumn({
   return (
     <aside
       aria-labelledby="favorites-heading"
-      className="order-2 mx-auto w-[168px] md:order-1 md:mx-0"
+      className="order-2 mx-auto w-[210px] md:order-1 md:mx-0 md:w-[clamp(108px,16vh,164px)]"
     >
       <h2 id="favorites-heading" className="sr-only">
         A few favorites
       </h2>
-      <ul className="grid gap-y-6">
+      <ul className="grid gap-y-4">
         {favorites.map((fav, i) => (
           <motion.li
             key={fav.label}
@@ -221,10 +221,10 @@ function FavoritesColumn({
           >
             {/* Fixed label height keeps the plates on an even rhythm
                 whether the label runs to one line or two. */}
-            <h3 className="mb-2 flex min-h-[2.5em] items-end justify-center text-center font-display text-[1.05rem] leading-tight text-ink">
+            <h3 className="mb-2 flex min-h-[2.4em] items-end justify-center text-center font-display text-[0.95rem] leading-tight text-ink md:text-[0.88rem]">
               {fav.label}
             </h3>
-            <ArtifactFrame image={fav.image} alt={fav.alt} />
+            <ArtifactFrame image={fav.image} alt={fav.alt} focus={fav.focus} />
           </motion.li>
         ))}
       </ul>

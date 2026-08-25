@@ -12,20 +12,25 @@ import Image from "next/image";
 export default function ArtifactFrame({
   image,
   alt,
+  focus,
 }: {
   image?: string;
   alt?: string;
+  focus?: string;
 }) {
   return (
     <div className="relative aspect-square w-full">
-      {/* Photo well — clipped to just inside the inner rule */}
-      <div className="absolute inset-[9%] overflow-hidden">
+      {/* Photo well — set inside the reach of the corner clamps (which run to
+          12.5%) so the frame never crops into the artwork, leaving a thin
+          parchment mat between the inner rule and the print. */}
+      <div className="absolute inset-[12.5%] overflow-hidden">
         {image ? (
           <Image
             src={image}
             alt={alt ?? ""}
             fill
-            sizes="(max-width: 640px) 90vw, 30vw"
+            sizes="(max-width: 767px) 200px, 180px"
+            style={focus ? { objectPosition: focus } : undefined}
             className="object-cover"
           />
         ) : null}
