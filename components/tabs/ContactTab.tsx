@@ -13,7 +13,7 @@ export default function ContactTab() {
     <section className="flex min-h-[60dvh] flex-col justify-center">
       <p className="meta-label">Correspondence</p>
       <h2 className="mt-2 max-w-[24ch] text-[clamp(1.9rem,3.5vw,2.6rem)] font-semibold leading-tight text-ink">
-        If you are building something serious, write to me.
+        I&rsquo;d love to hear from you!
       </h2>
 
       <hr className="ink-rule mt-10 max-w-xl" />

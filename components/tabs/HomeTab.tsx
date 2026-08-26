@@ -221,7 +221,7 @@ function FavoritesColumn({
           >
             {/* Fixed label height keeps the plates on an even rhythm
                 whether the label runs to one line or two. */}
-            <h3 className="mb-2 flex min-h-[2.4em] items-end justify-center text-center font-display text-[1.2rem] leading-tight text-ink md:text-[clamp(0.95rem,2.2vh,1.1rem)]">
+            <h3 className="mb-2 flex min-h-[2.5em] items-center justify-center text-center font-display text-[1.6rem] leading-tight text-ink md:text-[clamp(1.35rem,3.2vh,1.65rem)]">
               {fav.label}
             </h3>
             <ArtifactFrame image={fav.image} alt={fav.alt} focus={fav.focus} />

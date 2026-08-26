@@ -130,18 +130,18 @@ export type Favorite = {
 
 export const favorites: Favorite[] = [
   {
-    label: "My favorite artist",
+    label: "Favorite artist",
     image: "/favorites/tame-impala-currents.jpeg",
     alt: "Tame Impala, Currents album art",
   },
   {
-    label: "My favorite show",
+    label: "Favorite show",
     image: "/favorites/game-of-thrones.jpeg",
     alt: "Game of Thrones artwork: Jon Snow with the direwolf Ghost",
     focus: "center 28%",
   },
   {
-    label: "My favorite video game",
+    label: "Favorite video game",
     image: "/favorites/warframe.jpeg",
     alt: "Warframe artwork: an armored warframe on a hillside",
     focus: "center 21%",
@@ -150,13 +150,13 @@ export const favorites: Favorite[] = [
 
 export const about = {
   paragraphs: [
-    "Placeholder: background and technical direction — where you come from mathematically and what kinds of problems pull you in.",
-    "Placeholder: the kinds of systems and products you build — agents, ML/data systems, full-stack tools — and how you approach building them.",
-    "Placeholder: current intellectual interests — what you are reading, studying, or circling right now.",
+    "I’m a math major who started off with a research background which slowly transformed into a passion for learning about ML and AI. I became interested in product development and design, working to create AI solutions for difficult client processes. I’m interested in problems with no obvious solution, and ones that require digging deep to find a path forward.",
+    "My work experience mainly dealt with multi-agent systems for a variety of applications, including building reconciliation reports, chip design, and PE deal intelligence. I’m interested in how AI can be personalized and what goes on during memory and context recall.",
+    "Currently, I’m looking to gain more experience in building specialized infrastructure for agentic systems, including benchmarks and training environments.",
   ],
   now: [
-    "Placeholder: a current project or experiment.",
-    "Placeholder: something you are learning or researching.",
-    "Placeholder: something you are reading.",
+    "PM intern @ Oracle — agentic demos on the 26ai database",
+    "Learning to golf",
+    "Open to Winter & Summer 2027 internships",
   ],
 };
