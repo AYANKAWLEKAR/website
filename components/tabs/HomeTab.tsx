@@ -115,7 +115,7 @@ export default function HomeTab() {
         </defs>
       </svg>
 
-      <div className="my-auto grid items-center gap-x-12 gap-y-16 md:grid-cols-[clamp(108px,16vh,164px)_1fr]">
+      <div className="my-auto grid items-center gap-x-12 gap-y-16 md:grid-cols-[clamp(104px,15.5vh,164px)_1fr]">
         <FavoritesColumn reduced={!!reduced} variants={variants} />
 
         <div className="order-1 min-w-0 md:order-2">
@@ -128,7 +128,7 @@ export default function HomeTab() {
           animate="show"
           custom={0.08}
         >
-          <p className="text-center font-display text-[clamp(3.4rem,12vw,8.75rem)] leading-[1.05] text-ink">
+          <p className="text-center font-display text-[clamp(3.4rem,min(12vw,19vh),8.75rem)] leading-[1.05] text-ink">
             {owner.name}
           </p>
           <HankoSeal className="absolute -right-8 top-4 max-md:-right-1 max-md:-top-1" />
@@ -137,7 +137,7 @@ export default function HomeTab() {
         </motion.div>
 
         <motion.p
-          className="mx-auto mt-12 max-w-[52ch] text-center font-body text-[clamp(1.05rem,1.9vw,1.3rem)] leading-[1.85]"
+          className="mx-auto mt-[clamp(1.75rem,5vh,3rem)] max-w-[52ch] text-center font-body text-[clamp(1.05rem,1.9vw,1.3rem)] leading-[1.85]"
           style={reduced || inkSettled ? undefined : { filter: "url(#ink-murk)" }}
           initial={reduced ? { opacity: 0 } : { opacity: 0, color: "#8c7455" }}
           animate={
@@ -161,7 +161,7 @@ export default function HomeTab() {
       </div>
 
       <motion.div
-        className="mt-auto pt-10"
+        className="mt-auto pt-[clamp(1.25rem,4vh,2.5rem)]"
         variants={variants}
         initial="hidden"
         animate="show"
@@ -205,12 +205,12 @@ function FavoritesColumn({
   return (
     <aside
       aria-labelledby="favorites-heading"
-      className="order-2 mx-auto w-[210px] md:order-1 md:mx-0 md:w-[clamp(108px,16vh,164px)]"
+      className="order-2 mx-auto w-[210px] md:order-1 md:mx-0 md:w-[clamp(104px,15.5vh,164px)]"
     >
       <h2 id="favorites-heading" className="sr-only">
         A few favorites
       </h2>
-      <ul className="grid gap-y-4">
+      <ul className="grid gap-y-4 md:gap-y-[clamp(0.5rem,1.8vh,1rem)]">
         {favorites.map((fav, i) => (
           <motion.li
             key={fav.label}
@@ -221,7 +221,7 @@ function FavoritesColumn({
           >
             {/* Fixed label height keeps the plates on an even rhythm
                 whether the label runs to one line or two. */}
-            <h3 className="mb-2 flex min-h-[2.4em] items-end justify-center text-center font-display text-[0.95rem] leading-tight text-ink md:text-[0.88rem]">
+            <h3 className="mb-2 flex min-h-[2.4em] items-end justify-center text-center font-display text-[1.2rem] leading-tight text-ink md:text-[clamp(0.95rem,2.2vh,1.1rem)]">
               {fav.label}
             </h3>
             <ArtifactFrame image={fav.image} alt={fav.alt} focus={fav.focus} />

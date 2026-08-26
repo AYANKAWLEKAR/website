@@ -130,8 +130,6 @@ export default function ScrollSite() {
     <div className="scroll-content">
       <SmokeCanvas />
       <PetalCanvas />
-      {/* PetalCanvas removed for now — component kept at
-          components/PetalCanvas.tsx for when the trail returns */}
 
       <header className="relative z-30">
         <h1 className="sr-only">Ayan Kawlekar</h1>
@@ -198,7 +196,7 @@ export default function ScrollSite() {
             id={`panel-${active}`}
             aria-labelledby={`tab-${active}`}
             tabIndex={-1}
-            className="pt-10 outline-none md:pt-14"
+            className="pt-10 outline-none md:pt-[clamp(2rem,5.5vh,3.5rem)]"
             custom={mode}
             variants={panelVariants}
             initial="initial"
